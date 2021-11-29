@@ -19,7 +19,7 @@ public class Bee extends FlyerObject implements EnemyAward{
  public void step() {
  y += ySpeed;//y+：向下移动
  x += xSpeed;//x+：随机向左或是向右移动
- if (x <= 0 || x >= GameDriver.WIDTH - width) {
+ if (x <= 0 || x >= GamePanel.WIDTH - width) {
  xSpeed *= -1;//到达边界后反方向移动（正负为负，负负为正）
  }
  }
@@ -31,7 +31,7 @@ public class Bee extends FlyerObject implements EnemyAward{
  }else if (isDead()){//若死了 则返回airs[1~4]图片
  BufferedImage img = Images.bees[index++];//获取爆破图
  if (index == Images.bees.length){//若index到了5 则表示到了最后一张
- state = REMOVE;//将当前状态修改为REMOVE删除的
+ state = FlyerState.Remove;//将当前状态修改为REMOVE删除的
  }
  return img;//返回爆炸图
  }

@@ -11,7 +11,7 @@ public class BigAirplane extends FlyerObject implements EnemyScore{
  private int speed;
  
  public BigAirplane(){//初始化默认属性
- super(203,211);//图片宽，高
+ super(250,250);//图片宽，高
  speed = 3;//移动速度
  }
  
@@ -28,7 +28,7 @@ public class BigAirplane extends FlyerObject implements EnemyScore{
  }else if (isDead()){//若死了 则返回airs[1~4]图片
  BufferedImage img = Images.bairs[index++];//获取爆破图
  if (index == Images.bairs.length){//若index到了5 则表示到了最后一张
- state = REMOVE;//将当前状态修改为REMOVE删除的
+ state = FlyerState.Remove;//将当前状态修改为REMOVE删除的
  }
  return img;
  }

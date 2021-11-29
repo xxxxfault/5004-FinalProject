@@ -4,7 +4,6 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.nio.Buffer;
 //定时器
 import java.util.Timer;
 //定时器任务
@@ -16,15 +15,15 @@ import java.util.Arrays;
 /**
  * 世界测试类(整个游戏窗口)
  */
-public class GameDriver extends JPanel{
+public class GamePanel extends JPanel{
  public static final int WIDTH = 500;//窗口宽
  public static final int HEIGHT = 700;//窗口高
  
- public static final int START = 0;//启动状态
- public static final int RUNNING = 1;//运行状态
- public static final int PAUSE = 2;//暂停状态
- public static final int GAME_OVER = 3;//游戏结束状态
- private int state = START;//当前状态默认是启动状态
+ public static final GameState start = GameState.Start;//启动状态
+ public static final GameState running = GameState.Running;//运行状态
+ public static final GameState pause = GameState.Pause;//暂停状态
+ public static final GameState gameOver = GameState.GameOver;//游戏结束状态
+ private GameState state = start;//当前状态默认是启动状态
  
  /**
  * 声明每个类具体的对象
@@ -38,7 +37,7 @@ public class GameDriver extends JPanel{
  /**
  * 生成敌人对象（小敌机，大敌机，小蜜蜂）
  */
- public FlyerObject nextOne(){
+ public FlyerObject nextFlyer(){
  Random rand = new Random();
  int type = rand.nextInt(20);//0-19之间的随机数
  if (type < 5){//当随机数小于5
@@ -56,8 +55,8 @@ public class GameDriver extends JPanel{
  */
  public void enterAction() {//每10毫秒走一次
  enterIndex++;
- if (enterIndex%40 == 0 ){//四百毫秒走一次
-	 FlyerObject fl = nextOne();//获取敌人对象
+ if (enterIndex%30 == 0 ){//百毫秒走一次
+	 FlyerObject fl = nextFlyer();//获取敌人对象
  enemies = Arrays.copyOf(enemies,enemies.length+1);//扩容（每产生一个敌人数组就扩容1）
  enemies[enemies.length-1] = fl;//将生成的敌人fl放置enemies数组的末尾
  }
@@ -69,7 +68,7 @@ public class GameDriver extends JPanel{
  */
  public void shootAction(){//10毫秒走一次
  shootIndex++;
- if (shootIndex%30 == 0){//每300毫秒走一次
+ if (shootIndex%35 == 0){//每300毫秒走一次
  Bullet[] bs = h.shoot();//获取子弹数组对象
  bt = Arrays.copyOf(bt,bt.length+bs.length);//扩容子弹数组（每入场一个子弹就加一个元素）
  System.arraycopy(bs,0,bt,bt.length-bs.length,bs.length);//数组的追加
@@ -79,7 +78,7 @@ public class GameDriver extends JPanel{
  /**
  * 让除去英雄机外的所有对象（小敌机，大敌机，小蜜蜂，子弹，天空）移动
  */
- public void setpAction() {//每10毫秒走一次
+ public void stepAction() {//每10毫秒走一次
  s.step();//天空移动
  for (int i=0;i<enemies.length;i++) {//遍历所有敌人
  enemies[i].step();//敌人移动
@@ -127,7 +126,7 @@ public class GameDriver extends JPanel{
  int type = ea.getAwardType();//将具体的奖励值赋值给type
  switch (type){
  case EnemyAward.FIRE://火力值
- h.addFier();//返回增加火力值
+ h.addFire();//返回增加火力值
  break;
  case EnemyAward.LIFE://生命值
  h.addLife();//返回增加生命值
@@ -148,7 +147,7 @@ public class GameDriver extends JPanel{
  if (f.isLive() && h.isLive() && f.isHit(h)){//判断碰撞
  f.goDead();//敌人死亡
  h.subtractLife();//英雄机减生命值
- h.clearFier();//英雄机清空火力值
+ h.clearFire();//英雄机清空火力值
  }
  }
  }
@@ -158,7 +157,7 @@ public class GameDriver extends JPanel{
  */
  private void checkGameOverAction() {//每10毫秒走一次
  if (h.getLife() <= 0) {//若英雄机生命值为0或小于0
- state = GAME_OVER;//将状态修改为GAME_OVER游戏结束状态
+ state = gameOver;//将状态修改为GAME_OVER游戏结束状态
  }
  }
  /**
@@ -172,7 +171,7 @@ public class GameDriver extends JPanel{
  */
  @Override
  public void mouseMoved(MouseEvent e) {
- if (state == RUNNING){//仅在运行状态下执行
+ if (state == running){//仅在运行状态下执行
  int x = e.getX();//获取鼠标的x坐标
  int y = e.getY();//获取鼠标的y坐标
  h.moveTo(x,y);//接收鼠标具体坐标
@@ -185,10 +184,10 @@ public class GameDriver extends JPanel{
  */
  public void mouseClicked(MouseEvent e){
  switch (state){//根据当前状态做不同的处理
- case START://启动状态时
- state = RUNNING;//鼠标点击后改成运行状态
+  case Start://启动状态时
+ state = running;//鼠标点击后改成运行状态
  break;
- case GAME_OVER://游戏结束状态时
+  case GameOver://游戏结束状态时
  /**
  * 清理战场（将所有数据初始化）
  */
@@ -198,7 +197,7 @@ public class GameDriver extends JPanel{
  enemies = new FlyerObject[0];//敌人初始化所有属性
  bt = new Bullet[0];//子弹初始化所有属性
   
- state = START;//鼠标点击后修改为启动状态
+ state = start;//鼠标点击后修改为启动状态
  break;
  }
  }
@@ -208,8 +207,8 @@ public class GameDriver extends JPanel{
  * @param e
  */
  public void mouseExited(MouseEvent e){
- if (state == RUNNING){//若状态为运行
- state = PAUSE;//则将当前状态修改为暂停
+ if (state == running){//若状态为运行
+ state = pause;//则将当前状态修改为暂停
  }
  }
  
@@ -218,8 +217,8 @@ public class GameDriver extends JPanel{
  * @param e
  */
  public void mouseEntered(MouseEvent e){
- if (state == PAUSE){//若当前状态为暂停
- state = RUNNING;//则将当前状态修改为运行
+ if (state == pause){//若当前状态为暂停
+ state = running;//则将当前状态修改为运行
  }
  }
  };
@@ -230,10 +229,10 @@ public class GameDriver extends JPanel{
  timer.schedule(new TimerTask() {
  @Override
  public void run() {//定时干的事（每10毫秒自动执行此方法当中的所有方法）
- if (state == RUNNING){//只在运行状态下执行
+ if (state == running){//只在运行状态下执行
  enterAction();//敌人（大敌机，小敌机，小蜜蜂）入场
  shootAction();//子弹入场
- setpAction();//飞行物移动
+ stepAction();//飞行物移动
  outOfBoundsAction();//删除越界的敌人
  bulletBangAction();//子弹与敌人的碰撞
  heroBangAction();//英雄机与敌人的碰撞
@@ -275,13 +274,13 @@ public class GameDriver extends JPanel{
  g.drawString("SCORE:"+score,10,25);//在窗口右上角画分数
  g.drawString("HP:"+h.getLife(),10,45);//在窗口右上角画出英雄机的生命值
  switch (state){//画状态图
- case START:
+  case Start:
  g.drawImage(Images.start,120,300,250,250,null);//启动状态图
  break;
- case PAUSE:
+  case Pause:
  g.drawImage(Images.pause,120,300,250,250,null);//暂停图
  break;
- case GAME_OVER:
+  case GameOver:
  g.drawImage(Images.gameover,120,300,250,250,null);//游戏结束图
  break;
  }
@@ -293,13 +292,13 @@ public class GameDriver extends JPanel{
  */
  public static void main(String[] args) {
  JFrame frame = new JFrame();
- GameDriver world = new GameDriver();
+ GamePanel world = new GamePanel();
  frame.add(world);
  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  frame.setSize(WIDTH,HEIGHT);
  frame.setLocationRelativeTo(null);
  frame.setVisible(true);//1）设置窗口可见 2）尽快调用paint()方法
- 
+
  world.action();//启动程序的执行
  }
 }

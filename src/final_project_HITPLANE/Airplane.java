@@ -9,7 +9,7 @@ public class Airplane extends FlyerObject implements EnemyScore{
  private int speed;
  
  public Airplane(){
- super(66,89);
+ super(150,150);
  speed = 2;//小敌机的下落速度
  }
  /**重写step方法（移动）*/
@@ -27,7 +27,7 @@ public class Airplane extends FlyerObject implements EnemyScore{
  }else if (isDead()){//若死了 则返回airs[1~4]图片
  BufferedImage img = Images.airs[index++];//获取爆破图
  if (index == Images.airs.length){//若index到了5 则表示到了最后一张
- state = REMOVE;//将当前状态修改为REMOVE删除的
+ state = FlyerState.Remove;//将当前状态修改为REMOVE删除的
  }
  return img;//返回爆炸图
  /*

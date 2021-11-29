@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 public class Bullet extends FlyerObject{
 	private int speed;
 	 public Bullet(int x,int y) {//子弹有多个，每个子弹的初始坐标都不同，所以要写活
-	 super(2,3,x,y);
+	 super(15,30,x,y);
 	 speed = 3;//初始移动速度
 	 }
 	 /**重写step方法（移动)*/
@@ -21,7 +21,7 @@ public class Bullet extends FlyerObject{
 	 if (isLive()){//若活着则返回bullet图片
 	 return Images.bullet;
 	 }else if (isDead()){//若死了则将state修改为REMOVE
-	 state = REMOVE;
+	 state = FlyerState.Remove;
 	 }
 	 return null;//死了的和删除的都返回null空值
 	 /**
