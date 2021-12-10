@@ -1,7 +1,12 @@
 package final_project_HITPLANE;
 
-/*得分接口*/
+/**
+ * The interface is used for the score that the hero plane will get when it hit the specific type of enemy
+ */
 public interface EnemyScore {
- /*得分*/
- public int getScore();
+  /**
+   * get the score
+   * @return int type score
+   */
+  int getScore();
 }

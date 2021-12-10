@@ -28,8 +28,8 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="dfecf8dc-9b8d-48ab-870f-65dedae3c0fd">
-      <console name="Connection" type="STANDARD" schema="hit_plane" session="Main">INSERT INTO score
-VALUES (50,100);</console>
+      <console name="Connection" type="STANDARD" schema="hit_plane" session="Main"><![CDATA[INSERT INTO score
+VALUES (50,100);]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
@@ -67,7 +67,9 @@ VALUES (50,100);</console>
     <diagnostics-history />
   </component>
   <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
-    <recently-used-interfaces />
+    <recently-used-interfaces>
+      <mapping database-type="MYSQL" interface-id="DEFAULT" />
+    </recently-used-interfaces>
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>

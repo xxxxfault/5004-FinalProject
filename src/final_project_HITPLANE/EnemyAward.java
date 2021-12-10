@@ -1,11 +1,17 @@
 package final_project_HITPLANE;
 
+
+/**
+ * The interface is used for the award that the hero plane will get when it hit the specific type of enemy
+ */
 public interface EnemyAward {
- public int FIRE = 0;//火力
- public int LIFE = 1;//生命值
+ //awardType:Fire
+ int FIRE = 0;
+ //awardType:Life
+ int LIFE = 1;
  /**
- * 获取奖励值类型
- * @return
+ * get the type of award
+ * @return award type
  */
  int getAwardType();
 }
